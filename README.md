@@ -67,13 +67,3 @@ Contributions, issues, and feature requests are welcome. Feel free to check issu
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Contact
-For any inquiries about this project, please visit [https://fransiscustobias.com/mm802](https://fransiscustobias.com/mm802)
-"""
-
-# Write to README.md
-with open('README.md', 'w') as f:
-    f.write(readme_content)
-
-print("Updated README.md has been generated successfully with the dataset section!")
