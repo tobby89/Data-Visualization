@@ -11,6 +11,8 @@ This project utilizes the dataset of Canadian post-secondary institutions, sourc
 
 **Data Source:** [Government of Canada Open Data - Post-Secondary Institutions](https://open.canada.ca/data/en/dataset/ab36a4ab-9b69-49b1-8be6-6faa3f0d0c67)
 
+<img width="881" alt="image" src="https://github.com/user-attachments/assets/2104aba3-6d0c-44ee-8e6b-ce105be1de9e" />
+
 ## Features
 - Interactive data visualizations powered by D3.js and Plotly.js
 - Dynamic dropdown menus for intuitive data exploration
@@ -46,6 +48,10 @@ This project utilizes the dataset of Canadian post-secondary institutions, sourc
 - `index.html` - Main landing page with initial visualizations
 - `secondpage.html` - Secondary visualization page
 - Additional assets and resources organized in respective directories
+
+<img width="734" alt="image" src="https://github.com/user-attachments/assets/7fbba119-45cc-41c2-ab40-ee7c97871852" />
+
+<img width="732" alt="image" src="https://github.com/user-attachments/assets/c704f556-b35b-4996-906b-658c2f78cd40" />
 
 ## Browser Compatibility
 Tested and optimized for:
