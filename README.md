@@ -1,6 +1,13 @@
 # Canadian Post-Secondary Institutions Data Visualization
 This web application is designed to visualize data on Canadian post-secondary institutions, utilizing the official dataset from the Canadian government. The app allows users to explore institutions based on key attributes such as institution name, academic level, and program length. By providing an intuitive and interactive interface, this tool helps prospective students navigate through various options, enabling them to make informed decisions when selecting an institution and program that best aligns with their academic and career goals. The dataset ensures accuracy and up-to-date information, making it a reliable resource for anyone looking to explore post-secondary education options in Canada.
 
+
+<img width="734" alt="image" src="https://github.com/user-attachments/assets/7fbba119-45cc-41c2-ab40-ee7c97871852" />
+
+
+<img width="732" alt="image" src="https://github.com/user-attachments/assets/c704f556-b35b-4996-906b-658c2f78cd40" />
+
+
 ## Project Overview
 This interactive web application provides comprehensive data visualization for Canadian post-secondary institutions and programs. The project aims to make educational data more accessible and transparent for stakeholders in the Canadian education sector.
 
@@ -48,10 +55,6 @@ This project utilizes the dataset of Canadian post-secondary institutions, sourc
 - `index.html` - Main landing page with initial visualizations
 - `secondpage.html` - Secondary visualization page
 - Additional assets and resources organized in respective directories
-
-<img width="734" alt="image" src="https://github.com/user-attachments/assets/7fbba119-45cc-41c2-ab40-ee7c97871852" />
-
-<img width="732" alt="image" src="https://github.com/user-attachments/assets/c704f556-b35b-4996-906b-658c2f78cd40" />
 
 ## Browser Compatibility
 Tested and optimized for:
