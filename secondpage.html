@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Visualization</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+</head>
+<body>
+
+<div class="header">
+  <div class="header-wrapper">
+    <a href="index.html"><img src="canada.png"></a>
+    <div class="header-title">
+      Canada Post Secondary Institution Data
+    </div>
+  </div>
+</div>
+
+  <div class="container-wrapper">
+    <!-- keep the selection here to change data -->
+    <div class="container-filter">
+        <!-- Dropdown menu for Institution Name -->
+        <select id="institutionDropdown" onchange="updateAcademicLevels()" onclick="resetValue()">
+          <option id="institutionValue" value="all">All Institutions</option>
+        </select>
+
+        <!-- Dropdown menu for Academic Levels -->
+        <select id="academicLevelDropdown" onchange="updateProgramLengths()">
+          <option id="academicLevelValue" value="all">All Academic Levels</option>
+        </select>
+
+        <!-- Dropdown menu for Program Lengths -->
+        <select id="programLengthDropdown" onchange="updateChart()">
+          <option id="programLengthValue" value="all">All Program Lengths</option>
+        </select>
+
+        <!-- Button to navigate to second page -->
+        <button onclick="goToSecondPage()">Adjust Data</button>
+     
+      <script src="https://d3js.org/d3.v7.min.js"></script>
+      <script>
+        // Global variable to store the data
+        var data;
+
+        // Read data from institution.csv and populate dropdowns
+        d3.csv('institution.csv').then(function(csvData) {
+          data = csvData; // Assign data to global variable
+          var institutions = [...new Set(csvData.map(item => item.institution_name_e))];
+          var institutionDropdown = document.getElementById('institutionDropdown');
+          institutions.forEach(institution => {
+            var option = document.createElement('option');
+            option.text = institution;
+            option.value = institution;
+            institutionDropdown.add(option);
+          });
+         // updateAcademicLevels(); // Update academic levels dropdown initially
+        });
+
+      // Read the institution.csv file
+      d3.csv("institution.csv").then(function(data) {
+          // Sort data based on selected filters
+          var sortedData = data.filter(function(item) {
+              return (
+                  (selectedInstitution === 'all' || item.institution_name_e === selectedInstitution) &&
+                  (selectedAcademicLevel === 'all' || item.academic_level_area_of_study_e === selectedAcademicLevel) &&
+                  (selectedProgramLength === 'all' || item.program_length_e === selectedProgramLength)
+              );
+          });
+
+          // Sort the sortedData by institution, academic level, and program length
+          sortedData.sort(function(a, b) {
+              if (a.institution_name_e !== b.institution_name_e) {
+                  return a.institution_name_e.localeCompare(b.institution_name_e);
+              }
+              if (a.academic_level_area_of_study_e !== b.academic_level_area_of_study_e) {
+                  return a.academic_level_area_of_study_e.localeCompare(b.academic_level_area_of_study_e);
+              }
+              return a.program_length_e.localeCompare(b.program_length_e);
+          });
+
+          // Display data in table view
+          var tableData = "<table><tr><th>Program of Study</th><th>Contact</th><th>Contact Email</th></tr>";
+          // Limiting to display only the first 10 rows
+          sortedData.slice(0, 10).forEach(function(row) {
+              tableData += "<tr>";
+              tableData += "<td>" + row.program_of_study_e + "</td>";
+              tableData += "<td>" + row.contact + "</td>";
+              tableData += "<td>" + row.contact_email + "</td>";
+              tableData += "</tr>";
+          });
+          tableData += "</table>";
+
+          // Insert table inside the specified HTML element
+          document.getElementById('tableOfTermChart').innerHTML = tableData;
+      });
+
+
+
+        // Function to update academic levels dropdown based on selected institution
+        function updateAcademicLevels() {
+          var selectedInstitution = document.getElementById('institutionDropdown').value;
+          var academicLevels = [...new Set(data.filter(item => item.institution_name_e === selectedInstitution).map(item => item.academic_level_area_of_study_e))];
+          var academicLevelDropdown = document.getElementById('academicLevelDropdown');
+          academicLevelDropdown.innerHTML = '<option value="all"> All Academic Level</option>'; // Clear previous options
+
+          academicLevels.forEach(level => {
+            var option = document.createElement('option');
+            option.text = level;
+            option.value = level;
+            academicLevelDropdown.add(option);
+          });
+          updateProgramLengths(); // Update program lengths dropdown when institution changes
+        }
+
+        // Function to update program lengths dropdown based on selected institution and academic level
+        function updateProgramLengths() {
+          var selectedInstitution = document.getElementById('institutionDropdown').value;
+          var selectedAcademicLevel = document.getElementById('academicLevelDropdown').value;
+          var programLengths = [...new Set(data.filter(item => item.institution_name_e === selectedInstitution && item.academic_level_area_of_study_e === selectedAcademicLevel).map(item => item.program_length_e))];
+          var programLengthDropdown = document.getElementById('programLengthDropdown');
+          programLengthDropdown.innerHTML = '<option value="all"> All Program Length </option>'; // Clear previous options
+          
+          programLengths.forEach(length => {
+            var option = document.createElement('option');
+            option.text = length;
+            option.value = length;
+            programLengthDropdown.add(option);
+          });
+          updateChart(); // Update chart when institution or academic level changes
+        }
+
+        // Function to navigate to the second page
+        function goToSecondPage() {
+          var selectedInstitution = document.getElementById('institutionDropdown').value;
+          var selectedAcademicLevel = document.getElementById('academicLevelDropdown').value;
+          var selectedProgramLength = document.getElementById('programLengthDropdown').value;
+
+          var url = 'secondpage.html?institution=' + encodeURIComponent(selectedInstitution) +
+                    '&academicLevel=' + encodeURIComponent(selectedAcademicLevel) +
+                    '&programLength=' + encodeURIComponent(selectedProgramLength);
+
+          window.location.href = url;
+        }
+      </script>
+    </div>
+    <!-- end selection -->
+
+    <!-- visualization result -->
+    <div class="container-result">
+      <div id="visualization-title">Data Visualization for University of Alberta</div>
+      <div id="visualization">
+        <!-- Visualization components will be rendered here -->
+        <div id="programTypeChart"></div>
+        <div id="durationOfTermChart"></div>
+        <div id="tableOfTermChart" style=""></div>
+      </div>
+    </div>
+    <!-- end visualization result -->
+
+  <script>
+    // Retrieve query parameters from the URL
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const selectedInstitution = urlParams.get('institution');
+    const selectedAcademicLevel = urlParams.get('academicLevel');
+    const selectedProgramLength = urlParams.get('programLength');
+
+    window.onload = function() {
+      //set title value
+      document.getElementById('visualization-title').innerHTML = "Data Visualization for "+selectedInstitution+"";
+
+      //set filter default value accordingly
+      if (selectedInstitution == 'all'){
+        document.getElementById('institutionValue').innerHTML = "All Institutions";
+      } else {
+        document.getElementById('institutionValue').innerHTML = selectedInstitution;
+      }
+
+      if (selectedAcademicLevel == 'all'){
+        document.getElementById('academicLevelValue').innerHTML = "All Academic Level";
+      } else {
+        document.getElementById('academicLevelValue').innerHTML = selectedAcademicLevel;
+      }
+
+      if (selectedProgramLength == 'all') {
+          document.getElementById('programLengthValue').innerHTML = "All Program Length";
+      } else {
+          document.getElementById('programLengthValue').innerHTML = selectedProgramLength;
+      }
+
+    };
+
+    function resetValue() {
+      document.getElementById('institutionValue').innerHTML = "All Institutions";
+    }
+
+    // Fetch data from an API or load it from a local source (like a CSV file)
+    d3.csv('institution.csv').then(function(data) {
+      // Filter the data based on the selected parameters
+      var filteredData = data;
+      if (selectedInstitution !== 'all') {
+        filteredData = filteredData.filter(item => item.institution_name_e === selectedInstitution);
+      }
+      if (selectedAcademicLevel !== 'all') {
+        filteredData = filteredData.filter(item => item.academic_level_area_of_study_e === selectedAcademicLevel);
+      }
+      if (selectedProgramLength !== 'all') {
+        filteredData = filteredData.filter(item => item.program_length_e === selectedProgramLength);
+      }
+
+      // Prepare data for pie chart (program type)
+      var programTypes = [...new Set(filteredData.map(item => item.program_type_e))];
+      var programTypeData = programTypes.map(type => {
+        return {
+          labels: programTypes,
+          values: programTypes.map(programType => filteredData.filter(item => item.program_type_e === programType).length),
+          type: 'pie'
+        };
+      });
+
+      // Plot pie chart for program type
+      Plotly.newPlot('programTypeChart', programTypeData);
+
+      // Prepare data for bar chart (duration of term)
+      var programOfStudy = [...new Set(filteredData.map(item => item.program_of_study_e))];
+      var durationOfTermData = programOfStudy.map(program => {
+        return {
+          x: [program],
+          y: [filteredData.filter(item => item.program_of_study_e === program).reduce((acc, cur) => acc + parseInt(cur.duration_of_term_e), 0)],
+          type: 'bar',
+          name: program
+        };
+      });
+
+      // Plot bar chart for duration of term
+      var layout = {
+        title: 'Duration of Term by Program of Study',
+        xaxis: { title: 'Program of Study' },
+        yaxis: { title: 'Total Duration of Term' }
+      };
+      Plotly.newPlot('durationOfTermChart', durationOfTermData, layout);
+    });
+
+
+
+  </script>
+
+  </div>
+
+</body>
+</html>

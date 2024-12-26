@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Visualization</title>
+  <link rel="stylesheet" href="style.css">	
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+
+    <div class="logo" style="margin: 5% 23% !important">
+      <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+      <dotlottie-player src="https://lottie.host/9428445c-fee7-42aa-bf95-6de8528b637b/pWQJbsAOOt.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+    </div>
+
+
+    <div class="title">Looking for University in Canada?</div>
+    <div class="subtitle">simply choose the option below and we will visualize it for you!</div>
+  <div>
+    <!-- Dropdown menu for Institution Name -->
+    <select id="institutionDropdown" onchange="updateAcademicLevels()">
+      <option value="all">All Institutions</option>
+    </select>
+
+    <!-- Dropdown menu for Academic Levels -->
+    <select id="academicLevelDropdown" onchange="updateProgramLengths()">
+      <option value="all">All Academic Levels</option>
+    </select>
+
+    <!-- Dropdown menu for Program Lengths -->
+    <select id="programLengthDropdown" onchange="updateChart()">
+      <option value="all">All Program Lengths</option>
+    </select>
+
+    <!-- Button to navigate to second page -->
+    <button onclick="goToSecondPage()">Visualize Data</button>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Global variable to store the data
+    var data;
+
+    // Read data from institution.csv and populate dropdowns
+    d3.csv('institution.csv').then(function(csvData) {
+      data = csvData; // Assign data to global variable
+      var institutions = [...new Set(csvData.map(item => item.institution_name_e))];
+      var institutionDropdown = document.getElementById('institutionDropdown');
+      institutions.forEach(institution => {
+        var option = document.createElement('option');
+        option.text = institution;
+        option.value = institution;
+        institutionDropdown.add(option);
+      });
+      updateAcademicLevels(); // Update academic levels dropdown initially
+    });
+
+    // Function to update academic levels dropdown based on selected institution
+    function updateAcademicLevels() {
+      var selectedInstitution = document.getElementById('institutionDropdown').value;
+      var academicLevels = [...new Set(data.filter(item => item.institution_name_e === selectedInstitution).map(item => item.academic_level_area_of_study_e))];
+      var academicLevelDropdown = document.getElementById('academicLevelDropdown');
+      academicLevelDropdown.innerHTML = '<option value="all">All Academic Levels</option>'; // Clear previous options
+      academicLevels.forEach(level => {
+        var option = document.createElement('option');
+        option.text = level;
+        option.value = level;
+        academicLevelDropdown.add(option);
+      });
+      updateProgramLengths(); // Update program lengths dropdown when institution changes
+    }
+
+    // Function to update program lengths dropdown based on selected institution and academic level
+    function updateProgramLengths() {
+      var selectedInstitution = document.getElementById('institutionDropdown').value;
+      var selectedAcademicLevel = document.getElementById('academicLevelDropdown').value;
+      var programLengths = [...new Set(data.filter(item => item.institution_name_e === selectedInstitution && item.academic_level_area_of_study_e === selectedAcademicLevel).map(item => item.program_length_e))];
+      var programLengthDropdown = document.getElementById('programLengthDropdown');
+      programLengthDropdown.innerHTML = '<option value="all">All Program Lengths</option>'; // Clear previous options
+      programLengths.forEach(length => {
+        var option = document.createElement('option');
+        option.text = length;
+        option.value = length;
+        programLengthDropdown.add(option);
+      });
+      updateChart(); // Update chart when institution or academic level changes
+    }
+
+    // Function to navigate to the second page
+    function goToSecondPage() {
+      var selectedInstitution = document.getElementById('institutionDropdown').value;
+      var selectedAcademicLevel = document.getElementById('academicLevelDropdown').value;
+      var selectedProgramLength = document.getElementById('programLengthDropdown').value;
+
+      var url = 'secondpage.html?institution=' + encodeURIComponent(selectedInstitution) +
+                '&academicLevel=' + encodeURIComponent(selectedAcademicLevel) +
+                '&programLength=' + encodeURIComponent(selectedProgramLength);
+
+      window.location.href = url;
+    }
+  </script>
+</body>
+</html>
